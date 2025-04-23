@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>API JSONPlaceholder</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    input, button {
+      margin: 5px;
+    }
+    pre {
+      background-color: #f4f4f4;
+      padding: 10px;
+      border-radius: 5px;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+  <h1>API JSONPlaceholder - Exercício</h1>
+
+  <button onclick="getPosts()">A. Ver todos os posts</button>
+  <br>
+
+  <input type="number" id="postId" placeholder="ID do post">
+  <button onclick="getPostById()">B. Ver post por ID</button>
+  <br>
+
+  <input type="text" id="newTitle" placeholder="Título do novo post">
+  <input type="text" id="newBody" placeholder="Corpo do novo post">
+  <button onclick="createPost()">C. Criar novo post (POST)</button>
+  <br>
+
+  <input type="text" id="updateTitle" placeholder="Novo título ID 1">
+  <input type="text" id="updateBody" placeholder="Novo corpo ID 1">
+  <button onclick="updatePost()">D. Atualizar post ID 1 (PUT)</button>
+  <br>
+
+  <button onclick="deletePost()">E. Deletar post ID 1 (DELETE)</button>
+
+  <h2>Resultado:</h2>
+  <pre id="result">Clique em uma ação acima.</pre>
+
+  <script>
+    const url = "https://jsonplaceholder.typicode.com/posts";
+    const result = document.getElementById('result');
+
+    function getPosts() {
+      fetch(url)
+        .then(res => res.json())
+        .then(data => result.textContent = JSON.stringify(data, null, 2));
+    }
+
+    function getPostById() {
+      const id = document.getElementById('postId').value;
+      fetch(`${url}/${id}`)
+        .then(res => res.json())
+        .then(data => result.textContent = JSON.stringify(data, null, 2));
+    }
+
+    function createPost() {
+      const title = document.getElementById('newTitle').value;
+      const body = document.getElementById('newBody').value;
+
+      fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-type': 'application/json'
+        },
+        body: JSON.stringify({ title, body, userId: 1 })
+      })
+      .then(res => res.json())
+      .then(data => result.textContent = JSON.stringify(data, null, 2));
+    }
+
+    function updatePost() {
+      const title = document.getElementById('updateTitle').value;
+      const body = document.getElementById('updateBody').value;
+
+      fetch(`${url}/1`, {
+        method: 'PUT',
+        headers: {
+          'Content-type': 'application/json'
+        },
+        body: JSON.stringify({ id: 1, title, body, userId: 1 })
+      })
+      .then(res => res.json())
+      .then(data => result.textContent = JSON.stringify(data, null, 2));
+    }
+
+    function deletePost() {
+      fetch(`${url}/1`, {
+        method: 'DELETE'
+      })
+      .then(res => result.textContent = `Post ID 1 deletado (Status: ${res.status})`);
+    }
+  </script>
+</body>
+</html>
